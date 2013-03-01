@@ -55,7 +55,7 @@ public class MyGdxGame implements ApplicationListener {
 	public float xVelocity = 0;
 	Box2DDebugRenderer debugRenderer;
 	ArrayList<TextToDisplay> myTexts = new ArrayList<TextToDisplay>();
-	
+	TerrainMaker tm;
 	World world; 
 	
 	@Override
@@ -102,17 +102,20 @@ public class MyGdxGame implements ApplicationListener {
 		box2d(0,0);
 		box2d(.2f, .2f);
 		box2d(.1f, .3f);
-		addGround();
+		tm = new TerrainMaker(camera);
+		tm.generateTerrain(7, 10);
+		addGround(tm.);
 	}
 	
-	public void addGround()
+	public void addGround(ArrayList<Point2d> points)
 	{
 		
 		// Create our body definition
 		BodyDef groundBodyDef =new BodyDef();  
 		// Set its world position
 		groundBodyDef.position.set(new Vector2(0, -0.4f));  
-
+		
+		
 		// Create a body from the defintion and add it to the world
 		Body groundBody = world.createBody(groundBodyDef);  
 
@@ -120,7 +123,13 @@ public class MyGdxGame implements ApplicationListener {
 		PolygonShape groundBox = new PolygonShape();  
 		// Set the polygon shape as a box which is twice the size of our view port and 20 high
 		// (setAsBox takes half-width and half-height as arguments)
-		groundBox.setAsBox(camera.viewportWidth, 0.2f);
+		Vector2[] vectors = new Vector2[points.size()];
+		for(int i=0; i<points.size();++i)
+		{
+			vectors[i] = new Vector2(points.get(i).x, points.get(i).y);
+		}
+		groundBox.set(vectors);
+		//groundBox.setAsBox(camera.viewportWidth, 0.2f);
 		// Create a fixture from our polygon shape and add it to our ground body  
 		groundBody.createFixture(groundBox, 0.0f); 
 		// Clean up after ourselves
@@ -166,7 +175,8 @@ public class MyGdxGame implements ApplicationListener {
 		batch.begin();
 		//sprite.draw(batch);
 		manager.draw(batch);
-		
+		tank1Sprite.draw(batch);
+		tm.drawHills();
 		for(TextToDisplay text : myTexts)
 		{
 			//BitmapFont font = new BitmapFont();
@@ -197,7 +207,6 @@ public class MyGdxGame implements ApplicationListener {
 		{
 			tank1Sprite.setY(tank1Sprite.getY()-.01f);
 		}
-		tank1Sprite.draw(batch);
 		//debugRenderer.render(world, camera.combined);
 		batch.end();
 	}
