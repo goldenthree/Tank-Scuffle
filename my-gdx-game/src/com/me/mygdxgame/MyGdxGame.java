@@ -46,7 +46,8 @@ public class MyGdxGame implements ApplicationListener {
 	private Texture tank2Texture;
 	private Sprite tank2Sprite;
 	
-	BallManager manager = new BallManager();
+	BallManager ballManager = new BallManager();
+	TankManager tankManager = new TankManager();
 	
 	private float xOffset = 0;
 	private float xChange = 0.01f;
@@ -78,24 +79,17 @@ public class MyGdxGame implements ApplicationListener {
 		
 		TextureRegion region = new TextureRegion(texture, 0, 0, 1025, 550);
 		
-		sprite = new Sprite(region);
-		sprite.setSize(0.9f, 0.9f * sprite.getHeight() / sprite.getWidth());
-		sprite.setOrigin(sprite.getWidth()/2, sprite.getHeight()/2);
-		xOriginal = -sprite.getWidth()/2;
-		sprite.setPosition(xOriginal,-sprite.getHeight()/2 );
-		
 
-		tank1Texture = new Texture(Gdx.files.internal("data/Tank.png"));
-		tank1Texture.setFilter(TextureFilter.Linear, TextureFilter.Linear);
+//		tank1Texture = new Texture(Gdx.files.internal("data/Tank.png"));
+//		tank1Texture.setFilter(TextureFilter.Linear, TextureFilter.Linear);
+//		
+//		TextureRegion tankRegion = new TextureRegion(tank1Texture);
+//		
+//		tank1Sprite = new Sprite(tankRegion);
+//		tank1Sprite.setSize(0.25f, 0.25f * tank1Sprite.getHeight() / tank1Sprite.getWidth());
+//		tank1Sprite.setOrigin(-tank1Sprite.getRegionWidth(),-tank1Sprite.getRegionHeight());
 		
-		TextureRegion tankRegion = new TextureRegion(tank1Texture, 0, 0, 1025, 550);
-		
-		tank1Sprite = new Sprite(tankRegion);
-		tank1Sprite.setSize(0.25f, 0.25f * sprite.getHeight() / sprite.getWidth());
-		tank1Sprite.setOrigin(sprite.getWidth()/2, sprite.getHeight()/2);
-		xOriginal = -sprite.getWidth()*3/4;
-		
-		 
+		tankManager.CreateTank(world, .1f, .1f, 0, 0);
 		//BoxObjectManager.BOX_TO_WORLD = 100f
 		//Scale it by 100 as our box physics bodies are scaled down by 100
 		debugRenderer=new Box2DDebugRenderer();
@@ -141,7 +135,7 @@ public class MyGdxGame implements ApplicationListener {
 	
 	public void shoot(float velocityX, float velocityY)
 	{
-		manager.CreateBall(world,tank1Sprite.getX(), tank1Sprite.getY(), velocityX/80000f, velocityY/80000);
+		ballManager.CreateBall(world,tankManager.sprites.get(0).getX(),tankManager.sprites.get(0).getY(), velocityX/80000f, velocityY/80000);
 		
 	}
 
@@ -160,12 +154,14 @@ public class MyGdxGame implements ApplicationListener {
 		
 		world.step(1/300f, 6, 2);
 		
-		sprite.setPosition(sprite.getX() + xVelocity, sprite.getY());
-		manager.updateBalls();
+		ballManager.updateSprites();
+		tankManager.updateSprites();
 		batch.setProjectionMatrix(camera.combined);
 		batch.begin();
 		//sprite.draw(batch);
-		manager.draw(batch);
+		ballManager.draw(batch);
+		tankManager.draw(batch);
+//		tank1Sprite.draw(batch);
 		
 		for(TextToDisplay text : myTexts)
 		{
@@ -197,9 +193,13 @@ public class MyGdxGame implements ApplicationListener {
 		{
 			tank1Sprite.setY(tank1Sprite.getY()-.01f);
 		}
-		tank1Sprite.draw(batch);
-		//debugRenderer.render(world, camera.combined);
 		batch.end();
+		batch.begin();
+
+		debugRenderer.render(world, camera.combined);
+		batch.end();
+		
+		
 	}
 
 	@Override

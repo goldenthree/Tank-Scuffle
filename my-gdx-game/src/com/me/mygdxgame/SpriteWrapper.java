@@ -17,6 +17,15 @@ public class SpriteWrapper {
 		myTexture=texture;
 	}
 	
+	public float getX()
+	{
+		return myBody.getPosition().x;
+	}
+	
+	public float getY()
+	{
+		return myBody.getPosition().y;
+	}
 	
 	public void Update()
 	{
