@@ -1,0 +1,20 @@
+﻿
+# Please enter the commit message for your changes. Lines starting
+# with '#' will be ignored, and an empty message aborts the commit.
+# On branch master
+# Your branch is behind 'origin/master' by 1 commit, and can be fast-forwarded.
+#
+# Changes to be committed:
+#   (use "git reset HEAD <file>..." to unstage)
+#
+#	modified:   my-gdx-game/bin/com/me/mygdxgame/MyGdxGame.class
+#	new file:   my-gdx-game/bin/com/me/mygdxgame/Point2d.class
+#	modified:   my-gdx-game/src/com/me/mygdxgame/MyGdxGame.java
+#	new file:   my-gdx-game/src/com/me/mygdxgame/Point2d.java
+#	new file:   my-gdx-game/src/com/me/mygdxgame/TerrainMaker.java
+#
+# Untracked files:
+#   (use "git add <file>..." to include in what will be committed)
+#
+#	my-gdx-game/bin/com/me/mygdxgame/TerrainMaker.class
+

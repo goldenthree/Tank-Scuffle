@@ -18,8 +18,7 @@ import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 
 
 
-public class BallManager {
-	public ArrayList<SpriteWrapper> balls = new ArrayList<SpriteWrapper>();
+public class BallManager extends SpriteManager{
 	
 	
 	public void CreateBall(World world, float x, float y, float xVelocity, float yVelocity){
@@ -70,25 +69,11 @@ public class BallManager {
 		
 		ball.xVelocity=xVelocity;
 		ball.yVelocity=yVelocity;
-		balls.add(ball);
+		sprites.add(ball);
 		
 	}
 	
 
-	public void updateBalls()
-	{
-		for (SpriteWrapper ball : balls) {
-			ball.Update();
-		}
-	}
 	
-	public void draw(SpriteBatch spriteBatch)
-	{
-
-		for (SpriteWrapper ball : balls) {
-			ball.mySprite.draw(spriteBatch);
-		}
-		
-	}
 	
 }
