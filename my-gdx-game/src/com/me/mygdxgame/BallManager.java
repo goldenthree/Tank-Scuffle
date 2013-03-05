@@ -61,11 +61,9 @@ public class BallManager extends SpriteManager{
 		
 		SpriteWrapper ball = new SpriteWrapper(body,ballSprite, ballTexture);
 		
-		body.setLinearVelocity(xVelocity*20,yVelocity*20);
+		body.setLinearVelocity(xVelocity*60,yVelocity*60);
 		
 		
-		ball.xVelocity=xVelocity;
-		ball.yVelocity=yVelocity;
 		sprites.add(ball);
 		
 	}

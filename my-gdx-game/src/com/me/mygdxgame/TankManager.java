@@ -70,8 +70,6 @@ public class TankManager extends SpriteManager {
 			body.setLinearVelocity(xVelocity*20,yVelocity*20);
 			
 			
-			tank.xVelocity=xVelocity;
-			tank.yVelocity=yVelocity;
 			sprites.add(tank);
 			
 		}

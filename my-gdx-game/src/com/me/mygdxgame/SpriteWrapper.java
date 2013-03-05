@@ -7,9 +7,7 @@ import com.badlogic.gdx.physics.box2d.Body;
 public class SpriteWrapper {
 	public Sprite mySprite;
 	private Texture myTexture;
-	public float xVelocity = 0;
-	public float yVelocity = 0;
-	private Body myBody;
+	public Body myBody;
 	
 	public SpriteWrapper(Body body, Sprite sprite, Texture texture) {
 		myBody = body;

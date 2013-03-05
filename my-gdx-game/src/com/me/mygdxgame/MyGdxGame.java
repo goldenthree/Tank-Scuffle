@@ -16,12 +16,15 @@ import com.badlogic.gdx.input.GestureDetector;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
+import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
+import com.badlogic.gdx.physics.box2d.Fixture;
+import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
 
 public class MyGdxGame implements ApplicationListener {
-	private OrthographicCamera camera;
+	public OrthographicCamera camera;
 	private SpriteBatch batch;
 	private Texture texture;
 	private Sprite sprite;
@@ -29,7 +32,7 @@ public class MyGdxGame implements ApplicationListener {
 	private Sprite ballSprite;
 	
 	private Texture tank1Texture;
-	private Sprite tank1Sprite;
+	private SpriteWrapper tank1Sprite;
 	
 
 	private Texture tank2Texture;
@@ -41,10 +44,11 @@ public class MyGdxGame implements ApplicationListener {
 	private float xOffset = 0;
 	private float xChange = 0.01f;
 	private float xMaxChange = .5f;
-	private float xOriginal;
+	private float xOriginal;	
 	public float xVelocity = 0;
 	Box2DDebugRenderer debugRenderer;
 	ArrayList<TextToDisplay> myTexts = new ArrayList<TextToDisplay>();
+	private TerrainMaker tm;
 	
 	World world; 
 	
@@ -85,7 +89,14 @@ public class MyGdxGame implements ApplicationListener {
 		box2d(0,0);
 		box2d(.2f, .2f);
 		box2d(.1f, .3f);
-		addGround();
+		//addGround();
+		tm = new TerrainMaker(camera);
+		tm.generateTerrain(3, 50);
+		//addGround();
+		LevelLoader loader = new LevelLoader();
+		loader.LoadDefaultLevel(world);
+		
+//		tm.buildGround(world);
 	}
 	
 	public void addGround()
@@ -108,6 +119,35 @@ public class MyGdxGame implements ApplicationListener {
 		groundBody.createFixture(groundBox, 0.0f); 
 		// Clean up after ourselves
 		groundBox.dispose();
+	}
+	
+	public void addBox(Vector2[] pointsOfPolygon)
+	{
+		
+		
+		BodyDef groundBodyDef =new BodyDef();  
+		// Set its world position
+		groundBodyDef.position.set(new Vector2(0, 0));  
+		groundBodyDef.type = BodyType.DynamicBody;
+
+		// Create a body from the defintion and add it to the world
+		Body body = world.createBody(groundBodyDef);  
+
+		// Create a polygon shape
+		PolygonShape shape = new PolygonShape();  
+		// Set the polygon shape as a box which is twice the size of our view port and 20 high
+		// (setAsBox takes half-width and half-height as arguments)
+		shape.set(pointsOfPolygon);
+		// Create a fixture from our polygon shape and add it to our ground body  
+		FixtureDef fixtureDef = new FixtureDef();
+		fixtureDef.shape = shape;
+		fixtureDef.density = 0.5f; 
+		fixtureDef.friction = 0.4f;
+		fixtureDef.restitution = .1f; // Make it bounce a little bit
+		body.createFixture(fixtureDef); 
+		// Clean up after ourselves
+		
+		
 	}
 	
 	public void box2d(float x, float y)
@@ -163,31 +203,29 @@ public class MyGdxGame implements ApplicationListener {
 			}
 		}
 		boolean isRightPressed = Gdx.input.isKeyPressed(Keys.RIGHT);
+		tank1Sprite = tankManager.sprites.get(0);
 		if(isRightPressed)
 		{
-			tank1Sprite.setX(tank1Sprite.getX()+.01f);
+			tank1Sprite.myBody.applyForceToCenter(new Vector2(.1f,0f));
 		}
 		boolean isLeftPressed = Gdx.input.isKeyPressed(Keys.LEFT);
 		if(isLeftPressed)
 		{
-			tank1Sprite.setX(tank1Sprite.getX()-.01f);
+			tank1Sprite.myBody.applyForceToCenter(new Vector2(-.1f,0f));
 		}
 		boolean isUpPressed = Gdx.input.isKeyPressed(Keys.UP);
 		if(isUpPressed)
 		{
-			tank1Sprite.setY(tank1Sprite.getY()+.01f);
 		}
 		boolean isDownPressed = Gdx.input.isKeyPressed(Keys.DOWN);
 		if(isDownPressed)
 		{
-			tank1Sprite.setY(tank1Sprite.getY()-.01f);
 		}
 		batch.end();
 		batch.begin();
 
 		debugRenderer.render(world, camera.combined);
 		batch.end();
-		
 		
 	}
 

@@ -3,8 +3,13 @@ package com.me.mygdxgame;
 import java.util.ArrayList;
 
 import com.badlogic.gdx.graphics.Camera;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
+import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.physics.box2d.Body;
+import com.badlogic.gdx.physics.box2d.BodyDef;
+import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
 
 
@@ -27,6 +32,7 @@ public class TerrainMaker {
         // drawing stuff
   
         // looping through the hills
+        points.add(new Point2d(-.5f, -.1f));
         for (int i=0; i < numberOfHills; i++) {
             // setting a random hill height in pixels
             float randomHeight = (float) (Math.random()*100);
@@ -39,8 +45,8 @@ public class TerrainMaker {
                     // defining the point of the hill
             	
             		Point2d hillPoint =new Point2d(
-                    		(j*pixelStep+hillWidth*i)/640f-.5f,
-                    		(float)(hillStartY+randomHeight*Math.cos(2*Math.PI/hillSlices*j))/640f-.4f);
+                    		(j*pixelStep+hillWidth*i)/900f-.4f,
+                    		(float)(hillStartY+randomHeight*Math.cos(2*Math.PI/hillSlices*j))/640f-.5f);
 
             		System.out.println(hillPoint.x + ":" + hillPoint.y);
                     points.add(hillPoint);
@@ -48,12 +54,13 @@ public class TerrainMaker {
             // this is also necessary to make all hills (execept the first one) begin where the previous hill ended
             hillStartY = hillStartY+randomHeight;
         }
+        points.add(new Point2d(.5f, -.1f));
 	}
 	
 	// this is the core function: drawHills
     // arguments: the number of hills to generate, and the horizontal step, in pixels, between two hill points
-    public void drawHills(){
-
+    public void drawHills(SpriteBatch batch){
+    	batch.begin();
 		ShapeRenderer shapeRenderer = new ShapeRenderer();
     	shapeRenderer.setProjectionMatrix(myCamera.combined);
     	for(int i=1; i < points.size();++i)
@@ -68,10 +75,29 @@ public class TerrainMaker {
             		(float) hillPoint.y);
             shapeRenderer.end();
     	}
+    	batch.end();
     }
     
     public void buildGround(World world){
     	
+		//Create our body definition
+		BodyDef groundBodyDef =new BodyDef();  
+		// Set its world position
+		groundBodyDef.position.set(new Vector2(0, 0));  
+
+		// Create a body from the defintion and add it to the world
+		Body groundBody = world.createBody(groundBodyDef);  
+
+		// Create a polygon shape
+		PolygonShape groundBox = new PolygonShape();  
+		// Set the polygon shape as a box which is twice the size of our view port and 20 high
+		// (setAsBox takes half-width and half-height as arguments)
+		float[] points = new float[]{-0.4975f,-.1f,-0.3275f,0.34375f,-0.11625001f,0.25f,0.097500026f,0.27291667f,0.3675f,0.21041667f,0.495f,-.1f};
+		groundBox.set(points);
+		// Create a fixture from our polygon shape and add it to our ground body  
+		groundBody.createFixture(groundBox, 0.0f); 
+		// Clean up after ourselves
+		groundBox.dispose();
     	
     }
 }
